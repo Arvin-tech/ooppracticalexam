@@ -1,0 +1,92 @@
+import androidx.appcompat.app.AppCompatActivity;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class MainActivity extends AppCompatActivity {
+
+    private EditText loanAmountEditText;
+    private Button smallBankButton, bigBankButton;
+    private TextView interestTextView;
+    private Bank bank;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        loanAmountEditText = findViewById(R.id.loanAmountEditText);
+        smallBankButton = findViewById(R.id.smallBankButton);
+        bigBankButton = findViewById(R.id.bigBankButton);
+        interestTextView = findViewById(R.id.interestTextView);
+
+        // Initialize bank object with default interest rate
+        bank = new Bank();
+
+        smallBankButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double loanAmount = Double.parseDouble(loanAmountEditText.getText().toString());
+                bank = new SmallBanks(loanAmount);
+                double interest = bank.computeInterest();
+                interestTextView.setText(String.format("Interest: $%.2f", interest));
+            }
+        });
+
+        bigBankButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                double loanAmount = Double.parseDouble(loanAmountEditText.getText().toString());
+                bank = new BigBanks(loanAmount);
+                double interest = bank.computeInterest();
+                interestTextView.setText(String.format("Interest: $%.2f", interest));
+            }
+        });
+    }
+}
+
+public class Bank {
+    private double loanAmount;
+    private double interest;
+
+    // Non-default constructor
+    public Bank(double loanAmount) {
+        this.loanAmount = loanAmount;
+        this.interest = 0.04;
+    }
+
+    public double computeInterest() {
+        return loanAmount * (((Math.pow((1 + (interest / 12)), 2)) - 1));
+    }
+
+    public double returnInterest() {
+        return computeInterest();
+    }
+}
+
+public class SmallBanks extends Bank {
+    public SmallBanks(double loanAmount) {
+        super(loanAmount);
+        this.interest = 0.03;
+    }
+}
+
+public class BigBanks extends Bank {
+    public BigBanks(double loanAmount) {
+        super(loanAmount);
+        this.interest = 0.05;
+    }
+}
+
+In this implementation, the MainActivity class defines the UI elements and the bank object. The bank object is initialized with the default interest rate (0.04) in the onCreate method.
+
+When the user clicks on the "small bank" button or the "big bank" button, the onClick method of the corresponding button sets the interest rate of the bank object to 0.03 or 0.05, respectively, and calculates the interest using the computeInterest method of the Bank class.
+
+The Bank class defines the computeInterest method and the returnInterest method. The SmallBanks and BigBanks classes inherit from the Bank class and override the interest rate.
+
+The formula for computing the interest is implemented in the computeInterest method as specified in the problem statement. The returnInterest method simply calls the computeInterest method.
+
+
+
